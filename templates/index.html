@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能批改系统</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; padding: 22px 25px; text-align:center; }
+        .header h1 { font-size: 1.8rem; margin-bottom: 5px; }
+        .header p { opacity:.9; font-size:.9rem; }
+        .main { display:flex; flex-wrap:wrap; gap:25px; padding:25px; }
+        .left-panel { flex:2; min-width:320px; }
+        .right-panel { flex:1.3; min-width:300px; }
+        .card { background:#f9f9ff; border-radius:16px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,.05); margin-bottom:20px; }
+        .card h3 { font-size:1.05rem; margin-bottom:14px; color:#4a5568; }
+        label { font-weight:600; display:block; margin-bottom:6px; color:#333; font-size:.92rem; }
+        textarea, input[type=text], input[type=password], input[type=number], select { width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px; font-size:14px; font-family:inherit; }
+        textarea { font-family:'Consolas',monospace; resize:vertical; }
+        .form-group { margin-bottom:14px; }
+        .row { display:flex; gap:12px; }
+        .row > div { flex:1; }
+        .prompt-hint { background:#eef2ff; padding:10px 12px; border-radius:10px; margin-top:8px; font-size:12.5px; color:#4a5568; border-left:4px solid #667eea; }
+        .folder-select { border:2px dashed #667eea; padding:22px 15px; text-align:center; cursor:pointer; border-radius:12px; background:#faf9ff; transition:.3s; margin-bottom:12px; }
+        .folder-select:hover { background:#efedff; }
+        .file-list { background:#fff; border-radius:10px; padding:10px; max-height:160px; overflow-y:auto; font-size:12px; border:1px solid #eee; }
+        .file-item { padding:4px 8px; border-bottom:1px solid #f0f0f0; font-family:monospace; }
+        .btn { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; border:none; padding:12px 20px; border-radius:10px; font-size:16px; cursor:pointer; width:100%; font-weight:bold; transition:transform .2s; margin-top:6px; }
+        .btn:active { transform:scale(.98); }
+        .btn:disabled { opacity:.6; cursor:not-allowed; }
+        .btn-sm { width:auto; padding:8px 14px; font-size:13px; font-weight:600; }
+        .btn-green { background:#28a745; }
+        .btn-gray { background:#6c757d; }
+        .toggles { display:flex; flex-wrap:wrap; gap:14px; margin-top:6px; }
+        .toggles label { font-weight:500; display:flex; align-items:center; gap:6px; cursor:pointer; }
+        .toggles input { width:auto; }
+        .cap { font-size:12px; margin-top:8px; }
+        .cap .ok { color:#28a745; } .cap .no { color:#dc3545; }
+        .verify-msg { font-size:12.5px; margin-top:6px; min-height:16px; }
+        .progress { display:none; margin:16px 25px; }
+        .bar-wrap { background:#e9ecef; border-radius:20px; height:20px; overflow:hidden; }
+        .bar { height:100%; width:0; background:linear-gradient(135deg,#667eea,#764ba2); transition:width .3s; }
+        .progress-text { text-align:center; margin-top:8px; font-size:13px; color:#555; }
+        .results-section { margin-top:10px; padding:20px; border-top:1px solid #eee; display:none; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-bottom:20px; }
+        .stat-card { background:#f0f4ff; padding:12px; border-radius:12px; text-align:center; }
+        .stat-number { font-size:26px; font-weight:bold; color:#667eea; }
+        .stat-card div:last-child { font-size:12px; color:#666; }
+        .table-container { overflow-x:auto; margin:16px 0; }
+        table { width:100%; border-collapse:collapse; font-size:13px; }
+        th, td { border:1px solid #ddd; padding:8px 10px; text-align:left; vertical-align:top; }
+        th { background:#667eea; color:#fff; }
+        .score-high { color:#28a745; font-weight:bold; }
+        .score-low { color:#dc3545; }
+        .plagiarism-badge { background:#ffc107; color:#000; padding:2px 8px; border-radius:20px; font-size:12px; }
+        .chart-container { max-width:560px; margin:20px auto; }
+        .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .footer-note { background:#f8f9fa; padding:12px 20px; font-size:12px; color:#6c757d; border-top:1px solid #e9ecef; text-align:center; }
+        .divider { height:1px; background:#eee; margin:14px 0; }
+        .hidden { display:none; }
+        .trace-btn { padding:2px 8px; font-size:11px; border:none; border-radius:6px; background:#667eea; color:#fff; cursor:pointer; }
+        .modal-mask { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; }
+        .modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; border-radius:16px; width:min(760px,92vw); max-height:82vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.3); z-index:1001; }
+        .modal-head { position:sticky; top:0; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; }
+        .modal-head h3 { margin:0; font-size:1.05rem; }
+        .modal-close { cursor:pointer; font-size:20px; background:none; border:none; color:#fff; }
+        .modal-body { padding:16px 20px; }
+        .step { border-left:3px solid #ddd; padding:8px 12px; margin:8px 0; background:#fafaff; border-radius:0 8px 8px 0; }
+        .step .st-type { font-weight:700; font-size:12px; letter-spacing:.5px; }
+        .step pre { margin:6px 0 0; font-size:12px; white-space:pre-wrap; word-break:break-word; color:#444; }
+        .t-thought { border-left-color:#6c757d; } .t-tool_call { border-left-color:#667eea; }
+        .t-tool_result { border-left-color:#20a4a4; } .t-vision { border-left-color:#e0863a; }
+        .t-reflect { border-left-color:#dc3545; } .t-final { border-left-color:#28a745; } .t-note { border-left-color:#aaa; }
+        .t-review { border-left-color:#8e44ad; }
+        .review-badge { background:#ede7f6; color:#5e35b1; padding:1px 7px; border-radius:20px; font-size:11px; margin-left:4px; }
+        .step .badge-icn { margin-right:6px; }
+        .task-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+        .task-tab { flex:1; min-width:110px; padding:10px 8px; border:2px solid #dcd9ff; border-radius:12px; background:#fff; cursor:pointer; font-size:14px; font-weight:600; color:#555; }
+        .task-tab.active { border-color:#667eea; background:#eef0ff; color:#4c51bf; }
+        .detail-block { margin:10px 0; }
+        .detail-block h4 { font-size:13px; color:#4a5568; margin-bottom:6px; }
+        .detail-block table { font-size:12.5px; }
+        .detail-block td:nth-child(-n+3) { white-space:nowrap; }
+        .detail-block li { margin:3px 0 3px 18px; font-size:13px; }
+        .tag { display:inline-block; padding:1px 8px; border-radius:20px; font-size:11.5px; margin-right:4px; }
+        .tag-ok { background:#e6f6ea; color:#1e7e34; } .tag-bad { background:#fdecea; color:#c82333; } .tag-mid { background:#fff4e0; color:#b26a00; }
+        .detail-btn { padding:2px 8px; font-size:11px; border:none; border-radius:6px; background:#20a4a4; color:#fff; cursor:pointer; margin-left:4px; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 智能批改系统</h1>
+            <p>实验报告 · 简答题 · 数学步骤题 · 作文 ｜ 多模型可切换 · 拍照作答视觉批改 · PDF 盖分 · Excel · ZIP</p>
+        </div>
+
+        <div class="main">
+            <div class="left-panel">
+                <div class="card">
+                    <h3>🗂️ 题型</h3>
+                    <div class="task-tabs" id="taskTabs">
+                        <button class="task-tab active" data-type="auto">🪄 自动识别</button>
+                        <button class="task-tab" data-type="lab">🧪 实验报告</button>
+                        <button class="task-tab" data-type="short">✍️ 简答题</button>
+                        <button class="task-tab" data-type="math">🧮 数学步骤题</button>
+                        <button class="task-tab" data-type="essay">📖 作文</button>
+                    </div>
+
+                    <div id="taskFields" class="hidden">
+                        <div class="form-group">
+                            <label id="questionLabel">题目</label>
+                            <textarea id="question" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label id="referenceLabel">参考答案</label>
+                            <textarea id="reference" rows="4"></textarea>
+                        </div>
+                        <div class="form-group" id="finalAnswerGroup">
+                            <label>标准最终答案（可选，程序会核对学生答案是否等价，如 x=2 / 3√2 / 1/2）</label>
+                            <input type="text" id="finalAnswer" placeholder="例如：x=1或x=3">
+                        </div>
+                        <div class="row" id="essayMeta">
+                            <div class="form-group">
+                                <label>文体</label>
+                                <input type="text" id="genre" placeholder="记叙文 / 议论文 / 英语书面表达">
+                            </div>
+                            <div class="form-group">
+                                <label>学段</label>
+                                <input type="text" id="level" placeholder="初二 / 高三 / 大学英语四级">
+                            </div>
+                            <div class="form-group">
+                                <label>字数要求</label>
+                                <input type="number" id="wordLimit" min="0" placeholder="600">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label id="pointsLabel">得分点</label>
+                            <textarea id="points" rows="4"></textarea>
+                            <div class="prompt-hint" id="pointsHint"></div>
+                        </div>
+                        <div class="form-group" style="max-width:180px;">
+                            <label>满分</label>
+                            <input type="number" id="fullScore" min="1" max="1000">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="criteriaLabel">评分标准（可自定义）</label>
+                        <textarea id="criteria" rows="14" placeholder="加载默认评分标准中..."></textarea>
+                        <div class="prompt-hint" id="criteriaHint">
+                            💡 建议按维度分配分值（总分100），可含扣分项/加分项；评分标准越详细，AI 评分越稳。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 id="folderTitle">📁 选择文件夹（PDF / DOCX / TXT / MD）</h3>
+                    <div class="folder-select" id="folderSelect">
+                        <div id="folderTip">📂 点击选择包含实验报告的文件夹</div>
+                        <input type="file" id="folderInput" webkitdirectory multiple hidden>
+                    </div>
+                    <div id="fileCount" style="margin:6px 0; font-size:12px; color:#666;"></div>
+                    <div class="file-list" id="fileListPreview"><div style="color:#999;">未选择文件夹</div></div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="card">
+                    <h3>🤖 模型设置（填 Key 即可切换模型）</h3>
+                    <div class="form-group">
+                        <label>服务商 Provider</label>
+                        <select id="provider"></select>
+                    </div>
+                    <div class="form-group" id="baseUrlGroup">
+                        <label>Base URL</label>
+                        <input type="text" id="baseUrl" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>模型名称</label>
+                        <input type="text" id="model" placeholder="默认模型">
+                    </div>
+                    <div class="form-group">
+                        <label>API Key（仅本次请求使用，不保存）</label>
+                        <input type="password" id="apiKey" placeholder="sk-...">
+                    </div>
+                    <div class="toolbar">
+                        <button class="btn btn-sm btn-gray" id="verifyBtn">🔌 测试连接</button>
+                        <span class="verify-msg" id="verifyMsg"></span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="form-group" id="engineGroup">
+                        <label>批改引擎 Engine</label>
+                        <select id="engine">
+                            <option value="simple">⚡ 单次调用（最快）</option>
+                            <option value="agent">🤖 Agent（工具调用+自校验，可解释轨迹）</option>
+                            <option value="multi">👥 多智能体（Grader+Reviewer 复核）</option>
+                            <option value="framework">🧩 框架版（OpenAI Agents SDK 对照）</option>
+                        </select>
+                        <div class="prompt-hint" id="engineHint">Agent/多智能体会调用工具并产出可解释「执行轨迹」；多智能体额外做独立复核。</div>
+                    </div>
+                    <div class="toggles">
+                        <label><input type="checkbox" id="useVision" checked> 图片 / 手写作答视觉评分</label>
+                        <label><input type="checkbox" id="ocrEnabled" checked> 图片 OCR</label>
+                        <label><input type="checkbox" id="plagiarism"> 抄袭检测</label>
+                    </div>
+                    <div class="prompt-hint" id="visionHint" aria-live="polite"></div>
+                    <div class="form-group"><label for="ocrMode">识别方式</label><select id="ocrMode">
+                        <option value="hybrid">手写增强：PaddleOCR + Chandra（本地）</option>
+                        <option value="paddle">PaddleOCR（本地 CPU）</option><option value="tesseract">Tesseract</option><option value="off">关闭 OCR</option>
+                    </select></div>
+                    <label><input type="checkbox" id="annotateQuestions" checked> 在原稿上逐题标记</label>
+                    <div class="form-group"><label for="handwritingStyle">批注手写体</label><select id="handwritingStyle"><option value="liguofu">李国夫手写体（缺字使用同项目备用字体）</option><option value="kaishu">神韵英子楷书</option></select></div>
+                    <div class="prompt-hint" id="localStatus" aria-live="polite"></div>
+                    <div class="cap" id="capabilities"></div>
+                </div>
+
+                <button class="btn" id="gradeBtn">🚀 开始批量批改</button>
+            </div>
+        </div>
+
+        <div class="progress" id="progress">
+            <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+            <div class="progress-text" id="progressText">准备中...</div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="toolbar" style="justify-content:space-between;">
+                <h2 style="font-size:1.3rem;">📊 批改结果</h2>
+                <div class="toolbar">
+                    <a class="btn btn-sm btn-green" id="dlExcel" href="#" style="text-decoration:none; text-align:center;">📎 下载 Excel</a>
+                    <a class="btn btn-sm btn-green" id="dlZip" href="#" style="text-decoration:none; text-align:center;">🗜️ 下载盖分 ZIP</a>
+                    <button class="btn btn-sm btn-gray" id="regradeBtn" style="display:none;">🔁 重跑失败项</button>
+                    <button class="btn btn-sm btn-gray" id="regenBtn">♻️ 上传改后 Excel 重生成</button>
+                    <input type="file" id="regenInput" accept=".xlsx" hidden>
+                </div>
+            </div>
+            <div class="stats-grid" id="statsGrid"></div>
+            <div class="chart-container"><canvas id="scoreChart"></canvas></div>
+            <div class="table-container">
+                <table id="resultsTable">
+                    <thead><tr>
+                        <th>姓名</th><th>学号</th><th>分数</th><th id="dimHeader">分维度得分</th><th>评语</th>
+                        <th>给分依据</th><th>抄袭嫌疑</th><th>问题页码及原因</th><th>状态</th>
+                    </tr></thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            本地运行，报告不上传到除所选模型服务商外的任何第三方；API Key 仅随请求内存传递、不落盘。
+            图片与手写作答支持多模态视觉评分（DeepSeek Flash/GPT/Claude 等），不支持时使用 OCR/文本。
+        </div>
+    </div>
+
+    <div class="modal-mask" id="traceMask"></div>
+    <div class="modal" id="traceModal" style="display:none;">
+        <div class="modal-head">
+            <h3 id="traceTitle">Agent 执行轨迹</h3>
+            <button class="modal-close" id="traceClose">×</button>
+        </div>
+        <div class="modal-body" id="traceBody"></div>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        let PROVIDERS = {};
+        let currentJob = null;
+        let chartInstance = null;
+        let lastResults = [];
+        let allFiles = [];
+        let CFG = {};
+        let taskType = 'lab';
+        let visionPreference = true;
+        const taskCache = {};
+
+        const $ = (id) => document.getElementById(id);
+        const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        const DOC_EXT = /\.(pdf|docx|txt|md)$/i;
+        const ANY_EXT = /\.(pdf|docx|txt|md|jpe?g|png|bmp|webp)$/i;
+        const ANSWER_KEY_RE = /(答案|评分标准|评分细则|answer)/i;  // 与 graders/autodetect.py 保持一致
+        const TASK_FIELDS = ['criteria', 'question', 'reference', 'points', 'fullScore', 'finalAnswer', 'genre', 'level', 'wordLimit'];
+        const TASK_UI = {
+            short: {
+                question: '题目', reference: '参考答案',
+                points: '得分点（每行一个，可写分值；可留空）',
+                pointsPh: '提出概念并给出定义 | 2\n说明原理(4分)\n结合实例分析：4分',
+                pointsHint: '格式「要点 | 分值」「要点(2分)」「要点：2分」均可；没写分值的平均分配剩余分；留空则由 AI 按参考答案拆分。',
+                criteria: '补充评分规则（可选）',
+            },
+            math: {
+                question: '题目', reference: '参考解答（含完整步骤）',
+                points: '步骤分（每行一步，可写分值；可留空）',
+                pointsPh: '设未知数并列方程 | 3\n化简求解 | 5\n检验并写出答案 | 2',
+                pointsHint: '按步骤给分，前面算错后面方法对的可得步骤分；填了「标准最终答案」时，程序会用数值/符号计算核对学生答案。',
+                criteria: '补充评分规则（可选）',
+            },
+            essay: {
+                question: '作文题目 / 写作要求', reference: '范文或立意参考（可选）',
+                points: '评分维度（每行一个，可写分值）',
+                pointsPh: '内容与立意 | 30',
+                pointsHint: '留空使用默认 5 个维度；分值会按满分自动缩放。字数不足时程序会检查「规范」维度不能满分。',
+                criteria: '补充评分规则（可选）',
+            },
+        };
+
+        async function init() {
+            const res = await fetch('/config');
+            const cfg = await res.json();
+            CFG = cfg;
+            const sel = $('provider');
+            cfg.providers.forEach(p => {
+                PROVIDERS[p.id] = p;
+                const opt = document.createElement('option');
+                opt.value = p.id; opt.textContent = p.label;
+                sel.appendChild(opt);
+            });
+            $('criteria').value = cfg.default_criteria || '';
+            const cap = cfg.capabilities;
+            $('ocrMode').value = cfg.default_ocr_mode || 'hybrid';
+            $('localStatus').textContent = Object.entries(cap.components || {}).map(([name, state]) => name + (state.last_error ? ' 运行未完成：'+state.last_error : state.available ? ' 已初始化' : ' 未初始化')).join(' · ');
+            $('capabilities').innerHTML =
+                `Tesseract OCR：<span class="${cap.tesseract?'ok':'no'}">${cap.tesseract?'可用':'未检测到'}</span> ｜ ` +
+                `LibreOffice(DOCX)：<span class="${cap.soffice?'ok':'no'}">${cap.soffice?'可用':'未检测到，DOCX 将降级为纯文本'}</span>`;
+            applyProvider();
+            switchTask('auto');
+        }
+
+        function applyProvider() {
+            const p = PROVIDERS[$('provider').value];
+            $('baseUrl').value = p.base_url || '';
+            $('model').placeholder = p.default_model || '（请填写模型名）';
+            $('baseUrlGroup').classList.toggle('hidden', p.id !== 'custom');
+            updateVisionOption();
+        }
+
+        function updateVisionOption() {
+            const p = PROVIDERS[$('provider').value];
+            if (!p) return;
+            const model = $('model').value.trim() || p.default_model;
+            const supported = p.vision && (!p.vision_models || p.vision_models.includes(model));
+            $('useVision').disabled = !supported;
+            $('useVision').checked = supported && visionPreference;
+            $('visionHint').textContent = p.id === 'deepseek'
+                ? (supported
+                    ? '当前模型支持图片与手写作答；勾选视觉评分后直接读图。'
+                    : '当前模型未启用图片输入，将使用 OCR/文字。批改手写图片请填写 deepseek-flash，或清空模型名称使用默认模型。')
+                : '';
+        }
+
+        function taskDefaults(type) {
+            if (type === 'lab' || type === 'auto') return { criteria: CFG.default_criteria || '' };
+            return {
+                criteria: (CFG.default_rules || {})[type] || '',
+                fullScore: (CFG.default_full_score || {})[type] || 10,
+                points: type === 'essay' ? (CFG.default_essay_dimensions || '') : '',
+            };
+        }
+
+        function switchTask(type) {
+            taskCache[taskType] = Object.fromEntries(TASK_FIELDS.map(k => [k, $(k).value]));
+            taskType = type;
+            const saved = taskCache[type] || taskDefaults(type);
+            TASK_FIELDS.forEach(k => { $(k).value = saved[k] ?? ''; });
+
+            document.querySelectorAll('.task-tab').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+            const lab = type === 'lab', auto = type === 'auto';
+            $('taskFields').classList.toggle('hidden', lab || auto);
+            $('engineGroup').classList.toggle('hidden', !(lab || auto));
+            $('dimHeader').textContent = { auto: '逐题 / 分维度得分', lab: '分维度得分', short: '得分点', math: '步骤得分', essay: '维度得分' }[type];
+            $('criteria').rows = lab ? 14 : (auto ? 6 : 3);
+            if (auto) {
+                $('criteriaLabel').textContent = '实验报告评分标准（识别为实验报告时使用，可不改）';
+                $('criteriaHint').innerHTML = '🪄 只需上传学生的<b>试卷 / 作业 / 实验报告</b>（支持拍照）。程序逐份识别：实验报告按上面的标准和所选引擎批改；'
+                    + '试卷自动拆题，识别选择/判断/填空/简答/解答/作文，客观题由程序判分，主观题由模型批改并经程序校验。<br>'
+                    + '🔑 文件夹里文件名含「答案」或「评分标准」的文件会作为参考答案；没有则由 AI 先解题（详情里标「AI参考」，建议抽查）。';
+                $('folderTitle').textContent = '📁 选择文件夹（试卷 / 作业 / 实验报告，支持图片）';
+                $('folderTip').textContent = '📂 一个文件 = 一名学生；一人多页照片放进以学生姓名命名的子文件夹';
+            } else if (lab) {
+                $('criteriaLabel').textContent = '评分标准（可自定义）';
+                $('criteriaHint').textContent = '💡 建议按维度分配分值（总分100），可含扣分项/加分项；评分标准越详细，AI 评分越稳。';
+                $('folderTitle').textContent = '📁 选择文件夹（PDF / DOCX / TXT / MD）';
+                $('folderTip').textContent = '📂 点击选择包含实验报告的文件夹';
+            } else {
+                const ui = TASK_UI[type];
+                $('questionLabel').textContent = ui.question;
+                $('referenceLabel').textContent = ui.reference;
+                $('pointsLabel').textContent = ui.points;
+                $('points').placeholder = ui.pointsPh;
+                $('pointsHint').textContent = '💡 ' + ui.pointsHint;
+                $('criteriaLabel').textContent = ui.criteria;
+                $('criteriaHint').textContent = '💡 批改后程序会校验分值加总、得分点对齐等，不一致会让模型带着问题重批（最多 3 次）。';
+                $('finalAnswerGroup').classList.toggle('hidden', type !== 'math');
+                $('essayMeta').classList.toggle('hidden', type !== 'essay');
+                $('folderTitle').textContent = '📁 选择作答文件夹（PDF / DOCX / TXT / 图片）';
+                $('folderTip').textContent = '📂 每个文件 = 一名学生；或每名学生一个子文件夹（多张照片自动合并为一份）';
+            }
+            refreshFiles();
+        }
+
+        function refreshFiles() {
+            const ext = taskType === 'lab' ? DOC_EXT : ANY_EXT;
+            selectedFiles = allFiles.filter(f => ext.test(f.name));
+            const isKey = (f) => taskType === 'auto' && ANSWER_KEY_RE.test(f.name.replace(/\.[^.]+$/, ''));
+            const keyFiles = selectedFiles.filter(isKey);
+            let countText = allFiles.length ? `已选择 ${selectedFiles.length} 个可批改文件` : '';
+            if (taskType !== 'lab' && selectedFiles.length) {
+                // 与后端一致: 「上传文件夹/学生/文件」按学生子文件夹合并为一份作答; 答案卷不算作答
+                const keys = new Set(selectedFiles.filter(f => !isKey(f)).map(f => {
+                    const parts = (f.webkitRelativePath || f.name).split('/');
+                    return parts.length >= 3 ? parts.slice(0, -1).join('/') : parts.join('/');
+                }));
+                countText += `，共 ${keys.size} 份作答`;
+                if (taskType === 'auto') countText += keyFiles.length ? `，🔑 ${keyFiles.length} 个答案文件` : '，未发现答案文件（将由 AI 解题）';
+            }
+            $('fileCount').textContent = countText;
+            const box = $('fileListPreview');
+            if (!selectedFiles.length) { box.innerHTML = '<div style="color:#999;">未选择文件夹</div>'; return; }
+            const ordered = [...keyFiles, ...selectedFiles.filter(f => !isKey(f))];
+            box.innerHTML = ordered.slice(0, 20).map(f => `<div class="file-item">${isKey(f) ? '🔑' : (/\.(jpe?g|png|bmp|webp)$/i.test(f.name) ? '🖼️' : '📄')} ${esc(f.webkitRelativePath || f.name)}</div>`).join('')
+                + (selectedFiles.length > 20 ? `<div class="file-item">... 共 ${selectedFiles.length} 个</div>` : '');
+        }
+
+        $('taskTabs').addEventListener('click', (e) => {
+            const btn = e.target.closest('.task-tab');
+            if (btn && btn.dataset.type !== taskType) switchTask(btn.dataset.type);
+        });
+        $('provider').addEventListener('change', applyProvider);
+        $('model').addEventListener('input', updateVisionOption);
+        $('model').addEventListener('change', updateVisionOption);
+        $('useVision').addEventListener('change', () => { visionPreference = $('useVision').checked; });
+        $('folderSelect').addEventListener('click', () => $('folderInput').click());
+        $('folderInput').addEventListener('change', (e) => {
+            allFiles = Array.from(e.target.files);
+            refreshFiles();
+        });
+
+        function baseForm() {
+            const fd = new FormData();
+            fd.append('provider', $('provider').value);
+            fd.append('model', $('model').value.trim());
+            fd.append('base_url', $('baseUrl').value.trim());
+            fd.append('api_key', $('apiKey').value.trim());
+            fd.append('use_vision', $('useVision').checked);
+            return fd;
+        }
+
+        $('verifyBtn').addEventListener('click', async () => {
+            const msg = $('verifyMsg');
+            if (!$('apiKey').value.trim()) { msg.style.color = '#dc3545'; msg.textContent = '请先填写 API Key'; return; }
+            msg.style.color = '#666'; msg.textContent = '测试中...';
+            try {
+                const r = await fetch('/verify_key', { method: 'POST', body: baseForm() });
+                const d = await r.json();
+                msg.style.color = d.ok ? '#28a745' : '#dc3545';
+                msg.textContent = (d.ok ? '✅ ' : '❌ ') + d.message;
+            } catch (e) { msg.style.color = '#dc3545'; msg.textContent = '测试失败：' + e.message; }
+        });
+
+        $('gradeBtn').addEventListener('click', async () => {
+            const criteria = $('criteria').value.trim();
+            const lab = taskType === 'lab';
+            if (lab && !criteria) return alert('请填写评分标准');
+            if (!lab && taskType !== 'auto' && !$('question').value.trim()) return alert('请填写' + TASK_UI[taskType].question);
+            if ((taskType === 'short' || taskType === 'math') && !$('reference').value.trim()) return alert('请填写' + TASK_UI[taskType].reference);
+            if (!$('apiKey').value.trim()) return alert('请填写 API Key');
+            if (!selectedFiles.length) return alert('请选择文件夹');
+
+            const fd = baseForm();
+            fd.append('task_type', taskType);
+            fd.append('grading_criteria', criteria);
+            fd.append('ocr_enabled', $('ocrEnabled').checked);
+            fd.append('ocr_mode', $('ocrMode').value);
+            fd.append('annotate_questions', $('annotateQuestions').checked);
+            fd.append('handwriting_style', $('handwritingStyle').value);
+            fd.append('plagiarism', $('plagiarism').checked);
+            fd.append('engine', $('engine').value);
+            if (!lab) {
+                fd.append('question', $('question').value.trim());
+                fd.append('reference', $('reference').value.trim());
+                fd.append('points', $('points').value);
+                fd.append('full_score', $('fullScore').value);
+                if (taskType === 'math') fd.append('final_answer', $('finalAnswer').value.trim());
+                if (taskType === 'essay') {
+                    fd.append('genre', $('genre').value.trim());
+                    fd.append('level', $('level').value.trim());
+                    fd.append('word_limit', $('wordLimit').value);
+                }
+            }
+            selectedFiles.forEach(f => fd.append('reports', f, f.webkitRelativePath || f.name));
+
+            $('gradeBtn').disabled = true;
+            $('resultsSection').style.display = 'none';
+            $('progress').style.display = 'block';
+            setProgress(0, '上传并解析中...');
+
+            try {
+                const resp = await fetch('/grade', { method: 'POST', body: fd });
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({ error: 'HTTP ' + resp.status }));
+                    throw new Error(err.error || ('HTTP ' + resp.status));
+                }
+                await readStream(resp);
+            } catch (e) {
+                alert('批改失败：' + e.message);
+            } finally {
+                $('gradeBtn').disabled = false;
+            }
+        });
+
+        function setProgress(pct, text) {
+            $('bar').style.width = pct + '%';
+            if (text) $('progressText').textContent = text;
+        }
+
+        async function readStream(resp) {
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) >= 0) {
+                    const chunk = buffer.slice(0, idx).trim();
+                    buffer = buffer.slice(idx + 2);
+                    if (!chunk.startsWith('data:')) continue;
+                    handleEvent(JSON.parse(chunk.slice(5).trim()));
+                }
+            }
+        }
+
+        const stageText = { extract: '解析文件', grade: '批改中', plagiarism: '抄袭检测', stamp: '生成盖分PDF/ZIP', excel: '生成Excel' };
+        function handleEvent(ev) {
+            if (ev.type === 'stage') {
+                setProgress(ev.stage === 'grade' ? 5 : (ev.stage === 'stamp' ? 90 : (ev.stage === 'excel' ? 96 : 3)), ev.message);
+            } else if (ev.type === 'progress') {
+                const pct = 5 + Math.round((ev.index / ev.total) * 83);
+                setProgress(pct, `批改中 ${ev.index}/${ev.total}：${ev.student}（${ev.score}分）`);
+            } else if (ev.type === 'done') {
+                setProgress(100, '完成');
+                currentJob = ev.job_id;
+                renderResults(ev.results, ev.statistics, ev.artifacts, ev.extract_errors);
+                setTimeout(() => $('progress').style.display = 'none', 800);
+            } else if (ev.type === 'error') {
+                alert('错误：' + ev.message);
+                $('progress').style.display = 'none';
+            }
+        }
+
+        function renderResults(results, stats, artifacts, extractErrors) {
+            const fullOf = (r) => r.full_score || stats.full_score || 100;
+            const maxFull = Math.max(stats.full_score || 0, ...results.map(fullOf));
+            const isAssign = results.some(r => r.task_type && r.task_type !== 'lab');
+            const ok = results.filter(r => r.status === 'success');
+            const mixed = new Set(ok.map(fullOf)).size > 1;
+            const avgCard = () => {
+                if (!mixed) {
+                    return `<div class="stat-card"><div class="stat-number">${stats.average_score}</div><div>平均分（满分 ${ok.length ? fullOf(ok[0]) : maxFull}）</div></div>`;
+                }
+                // 试卷与实验报告混批时满分不同, 平均分没有意义, 改看平均得分率
+                const rate = Math.round(ok.reduce((s, r) => s + r.score / fullOf(r), 0) / ok.length * 100);
+                return `<div class="stat-card"><div class="stat-number">${rate}%</div><div>平均得分率（满分不一）</div></div>`;
+            };
+            $('statsGrid').innerHTML = `
+                <div class="stat-card"><div class="stat-number">${stats.total}</div><div>${isAssign ? '总份数' : '总报告数'}</div></div>
+                ${avgCard()}
+                <div class="stat-card"><div class="stat-number">${stats.max_score}</div><div>最高分</div></div>
+                <div class="stat-card"><div class="stat-number">${stats.min_score}</div><div>最低分</div></div>
+                <div class="stat-card"><div class="stat-number">${stats.plagiarism_count}</div><div>抄袭嫌疑</div></div>
+                <div class="stat-card"><div class="stat-number">${stats.errors}</div><div>失败/异常</div></div>`;
+
+            lastResults = results;
+            const tbody = $('resultsBody');
+            tbody.innerHTML = '';
+            results.forEach((r, idx) => {
+                const row = tbody.insertRow();
+                const nc = row.insertCell();
+                nc.textContent = r.student_name;
+                if (r.detected) {
+                    const t = document.createElement('span');
+                    t.className = 'tag ' + (r.detected.doc_type === 'lab' ? 'tag-ok' : 'tag-mid');
+                    t.style.marginLeft = '4px';
+                    t.title = '自动识别（' + (r.detected.by === 'keywords' ? '关键词' : '模型') + '）：' + (r.detected.evidence || '');
+                    t.textContent = r.detected.doc_type === 'lab' ? '实验报告' : '试卷';
+                    nc.appendChild(t);
+                }
+                row.insertCell().textContent = r.student_id;
+                const full = fullOf(r);
+                const sc = row.insertCell(); sc.className = r.score >= full * 0.6 ? 'score-high' : 'score-low';
+                sc.textContent = (r.task_type && r.task_type !== 'lab') ? `${r.score}/${full}` : r.score;
+                if (r.score_provisional) sc.append('（暂计）');
+                if (r.warning) {
+                    const w = document.createElement('span'); w.title = r.warning; w.textContent = ' ⚠️';
+                    sc.appendChild(w);
+                }
+                if (r.review && r.review.delta !== 0) {
+                    const b = document.createElement('span'); b.className = 'review-badge';
+                    b.title = '多智能体复核：初评 ' + r.review.grader_score + ' → 复核 ' + r.review.reviewer_score + (r.review.notes ? '\n' + r.review.notes : '');
+                    b.textContent = '复核Δ' + (r.review.delta > 0 ? '+' : '') + r.review.delta;
+                    sc.appendChild(b);
+                }
+                const dc = row.insertCell();
+                if (r.dimension_summary) {
+                    const tip = (r.dimensions || []).map(d => `${d.name}: ${d.score}${d.full != null ? '/' + d.full : ''}${d.comment ? ' ' + d.comment : ''}`).join('\n');
+                    dc.innerHTML = `<span title="${esc(tip)}">${esc(r.dimension_summary)}</span>`;
+                } else { dc.textContent = ''; }
+                row.insertCell().textContent = r.comment;
+                row.insertCell().textContent = r.score_reason || r.reason || '';
+                const pc = row.insertCell();
+                pc.innerHTML = (r.plagiarism_info && r.plagiarism_info.plagiarism) ? '<span class="plagiarism-badge">⚠️ 疑似</span>' : '无';
+                const ic = row.insertCell();
+                ic.innerHTML = r.problem_pages === '无' ? '无' : `<span title="${(r.problem_reasons||'').replace(/"/g,'')}">${r.problem_pages}</span>`;
+                const stCell = row.insertCell();
+                const base = r.status === 'success' ? '✅' : ('❌ ' + esc(r.error || ''));
+                let html = base;
+                if (r.pages?.length) html += ` <button class="review-question-btn" data-idx="${idx}">${r.review_required ? '待复核' : '预览 / 逐题修正'}</button>`;
+                if (r.stamp_error) html += ` <span title="${esc(r.stamp_error)}">导出未完成：${esc(r.stamp_error)}</span>`;
+                if (r.pages?.some(p => p.ocr?.enhancement_complete === false)) html += ' <span>增强识别未完成</span>';
+                if (r.details) html += ` <button class="detail-btn" data-idx="${idx}">📋详情</button>`;
+                if (r.trace && r.trace.length) {
+                    const label = r.engine === 'assignment' ? `🔍过程(批${r.steps || 1}次)`
+                        : r.engine === 'auto' ? `🔍过程(${r.steps || r.trace.length}次调用)` : `🔍轨迹(${r.steps || r.trace.length})`;
+                    html += ` <button class="trace-btn" data-idx="${idx}">${label}</button>`;
+                }
+                stCell.innerHTML = html;
+            });
+
+            $('dlExcel').href = artifacts.excel || '#';
+            $('dlZip').href = artifacts.zip || '#';
+            $('dlExcel').style.display = artifacts.excel ? 'inline-block' : 'none';
+            $('dlZip').style.display = artifacts.zip ? 'inline-block' : 'none';
+            $('regradeBtn').style.display = (stats.errors > 0) ? 'inline-block' : 'none';
+
+            const ctx = $('scoreChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: results.map(r => r.student_name.length > 8 ? r.student_name.slice(0, 6) + '..' : r.student_name),
+                    datasets: [{ label: mixed ? '得分率 %' : '分数', data: results.map(r => mixed ? Math.round(r.score / fullOf(r) * 100) : r.score),
+                        borderColor: '#667eea', backgroundColor: 'rgba(102,126,234,.1)', tension: .2, fill: true }]
+                },
+                options: { responsive: true, scales: { y: { min: 0, max: mixed ? 100 : (maxFull || 100) } } }
+            });
+
+            $('resultsSection').style.display = 'block';
+            if (extractErrors && extractErrors.length) {
+                console.warn('解析失败文件:', extractErrors);
+            }
+        }
+
+        // Agent 执行轨迹面板
+        const TRACE_ICON = { thought: '💭', tool_call: '🛠️', tool_result: '📥', vision: '👁️', reflect: '🔁', final: '✅', note: '📝', review: '👥' };
+        const TRACE_LABEL = { thought: '思考', tool_call: '调用工具', tool_result: '工具结果', vision: '加载图像', reflect: '自校验/反思', final: '最终评分', note: '提示', review: 'Reviewer 复核' };
+        function openTrace(r) {
+            $('traceTitle').textContent = r.engine === 'auto'
+                ? `自动识别过程 · ${r.student_name}（识别→拆题→参考答案→逐题批改）`
+                : r.engine === 'assignment'
+                ? `批改过程 · ${r.student_name}（生成→程序校验→重批，共 ${r.steps || 1} 次）`
+                : `Agent 执行轨迹 · ${r.student_name}（${r.steps || (r.trace || []).length} 步）`;
+            const body = $('traceBody');
+            body.innerHTML = (r.trace || []).map(s => {
+                let detail = '';
+                if (s.type === 'thought' || s.type === 'note') detail = s.text || '';
+                else if (s.type === 'tool_call') detail = s.name + '(' + JSON.stringify(s.args || {}) + ')';
+                else if (s.type === 'tool_result') detail = s.name + ' → ' + JSON.stringify(s.result || {});
+                else if (s.type === 'vision') detail = '查看页面 ' + JSON.stringify(s.pages || []) + `，共 ${s.count} 张图`;
+                else if (s.type === 'reflect') detail = '未通过：' + (Array.isArray(s.issues) ? s.issues.join('；') : (s.issues || ''));
+                else if (s.type === 'review') detail = s.ok === false ? (s.notes || '复核失败') : `初评 ${s.grader_score} → 复核 ${s.reviewer_score}（Δ${s.delta >= 0 ? '+' : ''}${s.delta}，${s.agree ? '认同' : '修正'}）${s.notes ? '：' + s.notes : ''}`;
+                else if (s.type === 'final') detail = JSON.stringify(s.grade || {}) + (s.warning ? '（' + s.warning + '）' : '');
+                else detail = JSON.stringify(s);
+                return `<div class="step t-${s.type}"><div class="st-type"><span class="badge-icn">${TRACE_ICON[s.type] || '•'}</span>${TRACE_LABEL[s.type] || s.type}</div><pre>${(detail + '').replace(/</g, '&lt;')}</pre></div>`;
+            }).join('') || '<div style="color:#999;">无轨迹</div>';
+            $('traceMask').style.display = 'block';
+            $('traceModal').style.display = 'block';
+        }
+        function closeTrace() { $('traceMask').style.display = 'none'; $('traceModal').style.display = 'none'; }
+        $('traceClose').addEventListener('click', closeTrace);
+        $('traceMask').addEventListener('click', closeTrace);
+        $('resultsBody').addEventListener('click', (e) => {
+            const btn = e.target.closest('.trace-btn');
+            if (btn) openTrace(lastResults[+btn.dataset.idx]);
+            const det = e.target.closest('.detail-btn');
+            if (det) openDetails(lastResults[+det.dataset.idx]);
+        });
+
+        // 作业题型的分项详情: 简答=得分点, 数学=步骤+最终答案核验, 作文=维度/亮点/建议/改写
+        const fmt = (v) => v == null ? '-' : (Number.isInteger(+v) ? String(+v) : (+v).toFixed(1));
+        const tag = (ok, yes, no, unknown) => ok === true ? `<span class="tag tag-ok">${yes}</span>`
+            : ok === false ? `<span class="tag tag-bad">${no}</span>` : `<span class="tag tag-mid">${unknown}</span>`;
+        function table(head, rows) {
+            return `<table><thead><tr>${head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`;
+        }
+        function list(title, items) {
+            return items && items.length ? `<div class="detail-block"><h4>${title}</h4><ul>${items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '';
+        }
+        const SOURCE_TAG = {
+            key: '<span class="tag tag-ok">答案卷</span>', ai: '<span class="tag tag-mid">AI参考</span>', none: '<span class="tag">无参考</span>',
+        };
+        function examBody(d) {
+            let html = `<div class="detail-block">学科：${esc(d.subject || '-')}　参考答案：${d.answer_key ? '来自上传的答案卷' : '无答案卷'}
+                ${d.ai_reference_count ? `　<span class="tag tag-mid">${d.ai_reference_count} 题参考答案由 AI 生成，建议抽查</span>` : ''}</div>`;
+            html += `<div class="detail-block"><h4>逐题得分</h4>` + table(['题号', '题型', '得分', '学生作答', '参考答案', '判定'],
+                (d.questions || []).map(q => `<tr${q.score < q.full ? ' style="background:#fff8f8;"' : ''}><td>${esc(q.no)}</td><td>${esc(q.label)}</td>
+                    <td>${fmt(q.score)}/${fmt(q.full)}${q.default_score ? '<span title="卷面未标分值, 使用默认分值">*</span>' : ''}</td>
+                    <td>${esc((q.student_answer || '（未作答）').slice(0, 60))}</td>
+                    <td>${esc((q.reference || '-').slice(0, 60))} ${SOURCE_TAG[q.reference_source] || ''}</td>
+                    <td>${esc(q.comment)}${q.graded_by === 'program' ? ' <span class="tag tag-ok">程序判</span>' : ''}${q.warning || q.error ? ' ⚠️' : ''}</td></tr>`)) + `</div>`;
+            // 主观题展开看分项
+            (d.questions || []).filter(q => q.details && q.graded_by === 'model').forEach(q => {
+                const kind = q.type === 'math' || q.type === 'essay' ? q.type : 'short';
+                html += `<details class="detail-block"><summary><b>第${esc(q.no)}题 · ${esc(q.label)}</b>　${fmt(q.score)}/${fmt(q.full)}　${esc(q.comment)}</summary>
+                    <div style="font-size:12.5px; color:#555; margin:6px 0;">${esc(q.question)}</div>${typeBody(kind, q.details, q.dimensions)}</details>`;
+            });
+            return html;
+        }
+        function openDetails(r) {
+            const d = r.details || {};
+            let html = `<div class="detail-block"><b>总分 ${r.score} / ${r.full_score}</b>　${esc(r.comment)}
+                <div style="color:#555; margin-top:4px; font-size:13px;">${esc(r.reason)}</div></div>`;
+            if (r.warning) html += `<div class="prompt-hint" style="border-left-color:#e0863a;">⚠️ ${esc(r.warning)}</div>`;
+            html += r.task_type === 'exam' ? examBody(d) : typeBody(r.task_type, d, r.dimensions);
+            $('traceTitle').textContent = `批改详情 · ${r.student_name}`;
+            $('traceBody').innerHTML = html;
+            $('traceMask').style.display = 'block';
+            $('traceModal').style.display = 'block';
+        }
+        function typeBody(type, d, dimensions) {
+            d = d || {};
+            let html = '';
+            if (type === 'short') {
+                const hit = { full: tag(true, '答到', '', ''), partial: tag(null, '', '', '部分'), miss: tag(false, '', '未答到', '') };
+                html += `<div class="detail-block"><h4>得分点</h4>` + table(['得分点', '得分', '判定', '学生作答依据'],
+                    (d.points || []).map(p => `<tr><td>${esc(p.name)}</td><td>${fmt(p.score)}/${fmt(p.full)}</td><td>${hit[p.hit] || ''}</td><td>${esc(p.evidence)}</td></tr>`)) + `</div>`;
+            } else if (type === 'math') {
+                const c = d.answer_check || {};
+                const method = { numeric: '数值计算', sympy: '符号计算', text: '文本比对', none: '无法比较' };
+                const how = (c.method || '').split('+').map(m => method[m] || m).join('+');
+                html += `<div class="detail-block"><h4>最终答案</h4>
+                    学生：<b>${esc(d.student_final_answer) || '（未作答）'}</b>　参考：<b>${esc(d.reference_final_answer) || '-'}</b>　
+                    ${tag(d.final_correct, '✓ 正确', '✗ 错误', '未能判定')}
+                    <div style="font-size:12px; color:#666; margin-top:4px;">程序核验：${esc(how || '-')}${c.approx ? '（近似相等）' : ''}${c.note ? '，' + esc(c.note) : ''}</div></div>`;
+                html += `<div class="detail-block"><h4>解题步骤${d.first_error_step ? `（第一处错误：第 ${d.first_error_step} 步）` : '（未发现错误步骤）'}</h4>` +
+                    table(['#', '步骤', '得分', '判定', '说明'], (d.steps || []).map((s, i) =>
+                        `<tr${i + 1 === d.first_error_step ? ' style="background:#fff5f5;"' : ''}><td>${i + 1}</td><td>${esc(s.name)}</td><td>${fmt(s.score)}/${fmt(s.full)}</td><td>${tag(s.correct, '✓', '✗', '?')}</td><td>${esc(s.note)}</td></tr>`)) + `</div>`;
+            } else if (type === 'essay') {
+                const src = { text: '程序统计', ocr: 'OCR 统计', model: '模型从图片估计' }[d.word_count_source] || '';
+                const unit = d.language === 'en' ? '词' : '字';
+                html += `<div class="detail-block">字数：<b>${d.word_count ?? '-'}</b> ${unit}${src ? '（' + src + '）' : ''}
+                    ${d.word_limit ? `　要求 ≥ ${d.word_limit}　${tag(!d.short_of_limit, '达标', '不足', '')}` : ''}
+                    　${d.off_topic ? tag(false, '', '偏题', '') : tag(true, '切题', '', '')}</div>`;
+                html += `<div class="detail-block"><h4>分维度</h4>` + table(['维度', '得分', '简评'],
+                    (dimensions || []).map(x => `<tr><td>${esc(x.name)}</td><td>${fmt(x.score)}/${fmt(x.full)}</td><td>${esc(x.comment)}</td></tr>`)) + `</div>`;
+                html += list('✨ 亮点', d.highlights) + list('🛠️ 修改建议', d.suggestions);
+                if ((d.revisions || []).length) {
+                    html += `<div class="detail-block"><h4>✏️ 句子修改示范</h4>` + table(['原句', '修改后'],
+                        d.revisions.map(x => `<tr><td>${esc(x.original)}</td><td>${esc(x.revised)}</td></tr>`)) + `</div>`;
+                }
+            }
+            return html;
+        }
+
+        $('regradeBtn').addEventListener('click', async () => {
+            if (!currentJob) return alert('请先完成一次批改');
+            if (!$('apiKey').value.trim()) return alert('请填写 API Key 再重跑');
+            $('regradeBtn').disabled = true;
+            const old = $('regradeBtn').textContent;
+            $('regradeBtn').textContent = '重跑中...';
+            try {
+                const r = await fetch('/regrade_failed/' + currentJob, { method: 'POST', body: baseForm() });
+                const d = await r.json();
+                if (d.error) throw new Error(d.error);
+                if (d.results) renderResults(d.results, d.statistics, d.artifacts, []);
+                alert(d.still_failed ? `仍有 ${d.still_failed} 项失败，可再试或检查 Key/网络` : '全部重跑成功');
+            } catch (e) { alert('重跑失败：' + e.message); }
+            finally { $('regradeBtn').disabled = false; $('regradeBtn').textContent = old; }
+        });
+
+        $('regenBtn').addEventListener('click', () => { if (currentJob) $('regenInput').click(); else alert('请先完成一次批改'); });
+        $('regenInput').addEventListener('change', async (e) => {
+            if (!e.target.files.length) return;
+            const fd = new FormData();
+            fd.append('workbook', e.target.files[0]);
+            $('regenBtn').disabled = true;
+            try {
+                const r = await fetch('/regenerate/' + currentJob, { method: 'POST', body: fd });
+                const d = await r.json();
+                if (d.error) throw new Error(d.error);
+                alert('已按编辑后的 Excel 重新盖分并重建 ZIP');
+                if (d.results) renderResults(d.results, d.statistics || {}, d.artifacts, []);
+                $('dlExcel').href = d.artifacts.excel; $('dlZip').href = d.artifacts.zip;
+            } catch (err) { alert('重生成失败：' + err.message); }
+            finally { $('regenBtn').disabled = false; e.target.value = ''; }
+        });
+
+        init();
+    </script>
+    <script src="{{ url_for('static', filename='review.js') }}"></script>
+</body>
+
+</html>

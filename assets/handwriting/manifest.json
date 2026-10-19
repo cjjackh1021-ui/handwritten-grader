@@ -1,0 +1,18 @@
+{
+  "repository": "14790897/handwriting-web",
+  "revision": "21825b77470ecf0d7b52795f5557fbd3f796faf4",
+  "renderer": "handrightbeta==8.7.0",
+  "fonts": [
+    {
+      "file": "李国夫手写体.ttf",
+      "sha256": "990667a527a9a725607ce965e529199464e47236664137e653c96301039d05f3",
+      "source": "https://raw.githubusercontent.com/14790897/handwriting-web/21825b77470ecf0d7b52795f5557fbd3f796faf4/ttf_files/%E6%9D%8E%E5%9B%BD%E5%A4%AB%E6%89%8B%E5%86%99%E4%BD%93.ttf"
+    },
+    {
+      "file": "神韵英子楷书.ttf",
+      "sha256": "76a8bb7e7e688e05738f1e61df17f01d29f4e2b019fb0260389c55af2ff92695",
+      "source": "https://raw.githubusercontent.com/14790897/handwriting-web/21825b77470ecf0d7b52795f5557fbd3f796faf4/ttf_files/%E7%A5%9E%E9%9F%B5%E8%8B%B1%E5%AD%90%E6%A5%B7%E4%B9%A6.ttf"
+    }
+  ],
+  "notice": "Repository code license does not automatically grant a separate font license. Preserve upstream font attribution."
+}

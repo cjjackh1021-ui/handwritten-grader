@@ -1,0 +1,29 @@
+# 运行时产物（每次批改的 job 目录、Excel、ZIP、盖分 PDF、渲染图）
+output/
+
+# 评估生成的报告（样例数据集 eval/sample_dataset 仍保留）
+eval/reports/
+eval/handwriting-results/
+
+# 后训练产物（jsonl / GRPO 报告）
+posttrain/runs/
+
+# 环境与密钥
+.env
+.env.*
+!.env.example
+skills/**/local.json
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv-*/
+models/
+venv/
+
+# 编辑器
+.vscode/
+.idea/

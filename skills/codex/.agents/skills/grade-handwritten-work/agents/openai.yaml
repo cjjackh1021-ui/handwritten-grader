@@ -1,0 +1,4 @@
+interface:
+  display_name: "手写作业逐题批改"
+  short_description: "用当前 Codex 模型批改手写试卷，调用本地双引擎识别并导出手写勾叉"
+  default_prompt: "使用 $grade-handwritten-work 批改指定目录的手写作业，按参考答案逐题评分，疑题待复核，输出手写批改 PDF、逐页 PNG 和 Excel。"

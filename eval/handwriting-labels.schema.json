@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Each line of labels.jsonl is one manually verified page. Coordinates refer to the EXIF-normalized page. Preserve student mistakes in text and formulas.",
+  "type": "object",
+  "required": ["page_id", "image", "text", "human_verified", "questions"],
+  "properties": {
+    "page_id": {"type": "string"},
+    "image": {"type": "string", "description": "Path relative to labels.jsonl"},
+    "human_verified": {"const": true},
+    "text": {"type": "string"},
+    "tags": {"type": "array", "items": {"enum": ["Chinese", "English", "formula", "correction", "blank", "rotated", "cross-page", "multi-column", "multi-photo"]}},
+    "questions": {"type": "array", "items": {"type": "object", "required": ["no", "answer_bbox"], "properties": {"no": {"type": "string"}, "answer_bbox": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number", "minimum": 0, "maximum": 1}}}}},
+    "formulas": {"type": "array", "items": {"type": "object", "required": ["text", "bbox"], "properties": {"text": {"type": "string"}, "bbox": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number", "minimum": 0, "maximum": 1}}}}}
+  }
+}

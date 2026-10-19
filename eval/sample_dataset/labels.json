@@ -1,0 +1,62 @@
+{
+  "张三_实验报告.txt": {
+    "score": 92,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 17, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 20, "full": 22},
+      {"name": "模块设计与关键代码", "score": 23, "full": 25},
+      {"name": "系统集成与测试", "score": 18, "full": 20},
+      {"name": "实验总结与创新点", "score": 14, "full": 15}
+    ]
+  },
+  "周八_实验报告.txt": {
+    "score": 88,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 17, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 19, "full": 22},
+      {"name": "模块设计与关键代码", "score": 22, "full": 25},
+      {"name": "系统集成与测试", "score": 17, "full": 20},
+      {"name": "实验总结与创新点", "score": 13, "full": 15}
+    ]
+  },
+  "李四_实验报告.txt": {
+    "score": 85,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 16, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 19, "full": 22},
+      {"name": "模块设计与关键代码", "score": 21, "full": 25},
+      {"name": "系统集成与测试", "score": 17, "full": 20},
+      {"name": "实验总结与创新点", "score": 12, "full": 15}
+    ]
+  },
+  "王五_实验报告.txt": {
+    "score": 78,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 15, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 17, "full": 22},
+      {"name": "模块设计与关键代码", "score": 20, "full": 25},
+      {"name": "系统集成与测试", "score": 15, "full": 20},
+      {"name": "实验总结与创新点", "score": 11, "full": 15}
+    ]
+  },
+  "赵六_实验报告.txt": {
+    "score": 65,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 12, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 15, "full": 22},
+      {"name": "模块设计与关键代码", "score": 16, "full": 25},
+      {"name": "系统集成与测试", "score": 13, "full": 20},
+      {"name": "实验总结与创新点", "score": 9, "full": 15}
+    ]
+  },
+  "孙七_实验报告.txt": {
+    "score": 52,
+    "dimensions": [
+      {"name": "实验目的与原理阐述", "score": 10, "full": 18},
+      {"name": "系统需求分析与方案设计", "score": 12, "full": 22},
+      {"name": "模块设计与关键代码", "score": 13, "full": 25},
+      {"name": "系统集成与测试", "score": 10, "full": 20},
+      {"name": "实验总结与创新点", "score": 7, "full": 15}
+    ]
+  }
+}

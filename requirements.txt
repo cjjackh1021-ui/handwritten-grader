@@ -1,0 +1,19 @@
+flask
+flask-cors
+requests
+pdfplumber
+pypdf
+pypdfium2>=4.30.0
+pillow
+pytesseract
+pandas
+scikit-learn
+openpyxl
+python-dotenv
+reportlab
+python-docx
+sympy        # 数学题最终答案的符号等价核验; 缺失时退化为数值/文本比对
+
+# 可选功能（按需单独安装，核心批改不依赖）：
+#   pip install openai-agents   # framework 引擎（OpenAI Agents SDK 对照实现）
+#   pip install "mcp>=1.2"      # MCP server（把批改工具对外暴露）
