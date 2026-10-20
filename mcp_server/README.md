@@ -23,6 +23,11 @@ pip install "mcp>=1.2"          # 1.x(FastMCP) 与 2.x(MCPServer) 均兼容
 
 ## 本地运行（stdio）
 
+另有三个质量评测工具：`prepare_grading_eval`（裁判健康检查、固定分组划分）、
+`run_grading_eval`（实际入口或离线响应回放）、`compare_grading_eval`（配对比较和采纳护栏）。
+输入为本地数据集/候选/运行目录，完整格式见 [评测说明](../docs/evaluation.md)。
+真实运行使用环境中的服务商凭据；回放不联网且不代表模型准确率。评测不会自动改变批改默认策略。
+
 ```bash
 python -m mcp_server.server
 ```

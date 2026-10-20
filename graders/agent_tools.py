@@ -137,6 +137,7 @@ def _submit_grade(ctx: ToolContext, args: dict) -> dict:
         "comment": args.get("comment", ""),
         "reason": args.get("reason", ""),
         "dimensions": args.get("dimensions", []) or [],
+        **{k: args[k] for k in ("deductions", "review_required", "review_reason") if k in args},
     }
     return {"received": True}
 
@@ -212,7 +213,18 @@ TOOLS: dict[str, Tool] = {
 
 
 def tool_schemas() -> list[dict]:
-    return [t.schema() for t in TOOLS.values()]
+    from . import eval_policy
+    import copy
+    schemas = copy.deepcopy([t.schema() for t in TOOLS.values()])
+    if eval_policy.instructions():
+        submit = next(s["function"]["parameters"]["properties"] for s in schemas
+                      if s["function"]["name"] == "submit_grade")
+        submit.update(deductions={"type": "array", "items": {"type": "object", "properties": {
+            "rule_id": {"type": "string"}, "evidence": {"type": "string"},
+            "reason_code": {"type": "string"}, "reason": {"type": "string"}},
+            "required": ["rule_id", "evidence", "reason_code", "reason"]}},
+            review_required={"type": "boolean"}, review_reason={"type": "string"})
+    return schemas
 
 
 def execute(ctx: ToolContext, name: str, args: dict) -> dict:

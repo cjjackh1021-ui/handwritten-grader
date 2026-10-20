@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 
-from . import agent_tools, grading, providers
+from . import agent_tools, grading, providers, eval_policy
 from .agent_tools import ToolContext
 
 MAX_STEPS = 8
@@ -73,6 +73,7 @@ def _normalize_submit(sub: dict) -> dict:
         "reason": reason,
         "dimensions": dims,
         "dimension_summary": grading.format_dimensions(dims),
+        **eval_policy.fields(sub),
     }
 
 
@@ -148,7 +149,7 @@ def grade_report_agent(choice, criteria, report, other_texts=None, max_steps: in
                       other_texts=other_texts or [])
     tools = agent_tools.tool_schemas()
     messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "system", "content": SYSTEM_PROMPT + eval_policy.instructions()},
         {"role": "user", "content": _initial_user(report)},
     ]
     trace: list[dict] = []
@@ -195,6 +196,7 @@ def grade_report_agent(choice, criteria, report, other_texts=None, max_steps: in
         if ctx.submitted is not None:
             ok, issues, normalized = _verify(ctx, choice)
             if ok:
+                normalized = eval_policy.finalize(normalized, ctx.submitted, report.full_text)
                 trace.append({"type": "final", "grade": {k: normalized[k] for k in ("score", "comment", "dimension_summary")}})
                 return _with_messages(
                     {**normalized, "trace": trace, "steps": step + 1, "engine": "agent"},
@@ -208,6 +210,7 @@ def grade_report_agent(choice, criteria, report, other_texts=None, max_steps: in
     # 步数用尽: 用最后一次提交(若有), 否则报错
     if ctx.submitted is not None:
         normalized = _normalize_submit(ctx.submitted)
+        normalized = eval_policy.finalize(normalized, ctx.submitted, report.full_text)
         trace.append({"type": "final", "grade": {"score": normalized["score"]}, "warning": "达到最大步数"})
         return _with_messages(
             {**normalized, "trace": trace, "steps": max_steps, "engine": "agent",

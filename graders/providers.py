@@ -28,7 +28,7 @@ from pathlib import Path
 
 import requests
 
-from . import config
+from . import config, telemetry
 
 REQUEST_TIMEOUT = 120
 
@@ -54,11 +54,16 @@ def _post_with_retry(url: str, headers: dict, payload: dict) -> requests.Respons
     """带指数退避的 POST。对 429/5xx/超时/连接错误重试, 尊重 Retry-After。"""
     last_exc: Exception | None = None
     for attempt in range(MAX_RETRIES):
+        started = time.monotonic()
+        event = telemetry.begin_attempt(payload)
+        request_error = None
         try:
             resp = requests.post(url, headers=headers, json=payload, timeout=REQUEST_TIMEOUT)
         except (requests.Timeout, requests.ConnectionError) as exc:
             last_exc = exc
+            request_error = exc
             resp = None
+        telemetry.record_attempt(event, resp, time.monotonic() - started, request_error)
         if resp is not None:
             if resp.status_code < 400:
                 return resp
@@ -175,6 +180,7 @@ def parse_grade_json(content: str) -> dict:
         "reason": reason,
         "dimensions": _parse_dimensions(data),
         "raw": content,
+        **{k: data[k] for k in ("deductions", "review_required", "review_reason") if k in data},
     }
 
 

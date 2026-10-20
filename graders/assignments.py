@@ -14,7 +14,7 @@ import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from . import math_check, providers
+from . import math_check, providers, eval_policy
 from .extract import ReportInfo
 from .grading import _fmt_num, format_dimensions
 
@@ -558,7 +558,7 @@ def grade_submission(choice: providers.ModelChoice, spec: TaskSpec, report: Repo
         trace.append({"type": "tool_call", "name": "count_words", "args": {"language": language}})
         trace.append({"type": "tool_result", "name": "count_words", "result": dict(facts)})
 
-    system = SYSTEM_PROMPTS[spec.task_type]
+    system = SYSTEM_PROMPTS[spec.task_type] + eval_policy.instructions()
     verify = VERIFIERS[spec.task_type]
     feedback = ""
     last = None
@@ -615,7 +615,7 @@ def grade_submission(choice: providers.ModelChoice, spec: TaskSpec, report: Repo
     }
     if warning:
         result["warning"] = warning
-    return result
+    return eval_policy.finalize(result, data, text)
 
 
 def _feedback(issues: list[str], raw: str) -> str:

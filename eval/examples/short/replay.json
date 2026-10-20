@@ -1,0 +1,293 @@
+{
+  "short-g1-full": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g1-partial": [
+    {
+      "score": 7,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "missing",
+          "evidence": "",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 0,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g1-review": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g2-full": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g2-partial": [
+    {
+      "score": 7,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "missing",
+          "evidence": "",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 0,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g2-review": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g3-full": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和叶绿体，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g3-partial": [
+    {
+      "score": 7,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "missing",
+          "evidence": "",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 0,
+          "evidence": "需要光照，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照，产生有机物和氧气。"
+        }
+      ]
+    }
+  ],
+  "short-g3-review": [
+    {
+      "score": 10,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "points": [
+        {
+          "point": "光照",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "叶绿体",
+          "full": 3,
+          "score": 3,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        },
+        {
+          "point": "产物",
+          "full": 4,
+          "score": 4,
+          "evidence": "需要光照和[关键字无法辨认]，产生有机物和氧气。"
+        }
+      ]
+    }
+  ]
+}

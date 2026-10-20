@@ -1,0 +1,9 @@
+{"id": "essay-g1-full", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "essay-g1-partial", "score": 7, "dimensions": {"r1": 4, "r2": 3, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r3", "reason_code": "language", "evidence_any": ["我我开心"]}]}
+{"id": "essay-g1-review", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "essay-g2-full", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "essay-g2-partial", "score": 7, "dimensions": {"r1": 4, "r2": 3, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r3", "reason_code": "language", "evidence_any": ["我我开心"]}]}
+{"id": "essay-g2-review", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "essay-g3-full", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "essay-g3-partial", "score": 7, "dimensions": {"r1": 4, "r2": 3, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r3", "reason_code": "language", "evidence_any": ["我我开心"]}]}
+{"id": "essay-g3-review", "score": 10, "dimensions": {"r1": 4, "r2": 3, "r3": 3}, "review_required": true, "human_verified": false, "deductions": []}

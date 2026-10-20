@@ -10,6 +10,7 @@
 - grade_document        自动识别试卷/实验报告并批改(试卷自动拆题、逐题判分)
 - check_similarity      多份报告两两查重
 - build_summary_excel   把评分结果写成分组 Excel
+- prepare_grading_eval / run_grading_eval / compare_grading_eval  独立评测及版本比较
 
 运行(stdio)::
 
@@ -235,6 +236,57 @@ def build_summary_excel(items_json: str, out_path: str = "") -> dict:
     out.parent.mkdir(parents=True, exist_ok=True)
     summary.build_workbook(items, out)
     return {"path": str(out), "count": len(items)}
+
+
+@mcp.tool(description=(
+    "审计评测裁判的正反对照，并生成按题目族分组分层的三份划分。suite_dir 是本地评测集目录，"
+    "包含 suite.json、cases.jsonl 和 labels.private.jsonl。只做本地检查，不调用模型。"))
+def prepare_grading_eval(suite_dir: str, out_dir: str, seed: int = 42) -> dict:
+    from eval import judge as quality_judge, suites
+    suite = suites.load(suite_dir)
+    audit = quality_judge.audit(suite)
+    out = Path(out_dir).expanduser().resolve()
+    suites.write_json(out / "audit.json", audit)
+    if not audit["healthy"]:
+        return {"healthy": False, "audit": audit, "audit_path": str(out / "audit.json")}
+    split = out / "split.json"
+    if split.exists():
+        # Preserve an established held-out set; do not quietly reshuffle it.
+        suites.check_split(suite, suites.read_json(split))
+    else:
+        suites.write_json(split, suites.make_split(suite, seed))
+    return {"healthy": True, "split_file": str(split), "audit_path": str(out / "audit.json")}
+
+
+@mcp.tool(description=(
+    "按冻结划分评测实际批改入口，保留每次失败/重试及 JSON/HTML 报告。提供 replay_file 时仅离线回放；"
+    "否则使用环境中的 provider API Key 实际发送公开案例，不能将离线结果称为模型准确率。"
+    "实验报告支持 simple/agent；其他题型走作业入口。locked-test 需 validation 选择文件。"))
+def run_grading_eval(suite_dir: str, split_file: str, candidate_file: str, out_dir: str,
+                     partition: str = "search", repeats: int = 1, timeout: float = 180,
+                     provider: str = "deepseek", model: str = "", base_url: str = "",
+                     use_vision: bool = False, ocr_mode: str = "off", engine: str = "agent",
+                     replay_file: str = "", final_selection: str = "") -> dict:
+    from eval import runner, suites
+    dest = runner.run(suite_dir, split_file, candidate_file, out_dir, partition=partition,
+        repeats=repeats, timeout=timeout, provider=provider, model=model, base_url=base_url,
+        use_vision=use_vision, ocr_mode=ocr_mode, engine=engine,
+        replay=replay_file or None, final_selection=final_selection or None)
+    return {"directory": str(dest), "report": str(dest / "report.html"),
+            "summary": suites.read_json(dest / "report.json")}
+
+
+@mcp.tool(description=(
+    "对同一评测集/划分/配置下两次运行做配对分组 bootstrap，检查覆盖率、交付率、分数、耗时和 token 护栏。"
+    "不会自动改变批改默认配置。history_file 可记录有限迭代，此时 hypothesis 必填。"))
+def compare_grading_eval(baseline_dir: str, candidate_dir: str, out_file: str,
+                         guards_file: str = "", hypothesis: str = "",
+                         history_file: str = "", max_rounds: int = 5) -> dict:
+    from eval.compare import compare
+    from eval.suites import read_json
+    return compare(baseline_dir, candidate_dir, out_file,
+        guards=read_json(guards_file) if guards_file else None, hypothesis=hypothesis,
+        history=history_file or None, max_rounds=max_rounds)
 
 
 def main() -> None:

@@ -1,0 +1,9 @@
+{
+  "id": "synthetic-lab-v1",
+  "task_type": "lab",
+  "subject": "协议回归示例",
+  "rubric_version": "synthetic-v1",
+  "judge_version": "evidence-v1",
+  "input_mode": "text",
+  "description": "人工构造的功能测试材料；没有真实学生数据，也不是人工准确率验收。"
+}

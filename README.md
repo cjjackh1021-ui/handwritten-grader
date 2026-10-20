@@ -101,28 +101,22 @@ flowchart TD
 
 Agent 可用工具（[graders/agent_tools.py](graders/agent_tools.py)）：`get_rubric` / `get_report_info` / `read_text` / `view_pages`（视觉复核，无视觉能力时回退 OCR）/ `check_similarity` / `submit_grade`（终止并触发自校验）。循环实现见 [graders/agent.py](graders/agent.py)，底层 tool calling 见 `providers.chat`（OpenAI 兼容，DeepSeek/OpenAI 通用）。
 
-## 评估 eval（用数据证明 agent 优于单次调用）
+## 批改质量评测与候选策略
 
-用「报告 + 人工标注」的小数据集，量化各引擎相对人工分的 **MAE / RMSE / 命中率(acc@5) / 皮尔逊相关 / 维度命中率**，见 [eval/](eval/)。
+新增独立评测模块，覆盖简答、数学、作文和实验报告，接入实际评分函数及报告 Agent 的工具循环。教师公开细则与隐藏标注分开，先审计裁判，再按相关题目组划分 search / validation / locked-test。
 
-```bash
-# 离线演示（无需 API，走确定性 mock 批改器，验证评估流水线可用）
-python -m eval.run_eval --dataset eval/sample_dataset --engines simple,agent,multi,framework --mock
-
-# 真实评估（用某 provider 的 key 实际跑各引擎）
-python -m eval.run_eval --dataset eval/sample_dataset --engines simple,agent,multi \
-    --provider deepseek --api-key sk-xxx
+```powershell
+# 不联网的功能验证；可将 lab 换为 short/math/essay
+python -m eval.quality audit --suite eval/examples/lab --out eval/runs/audit.json
+python -m eval.quality split --suite eval/examples/lab --out eval/runs/split.json
+python -m eval.quality run --suite eval/examples/lab --split-file eval/runs/split.json --candidate eval/examples/evidence.json --replay eval/examples/lab/replay.json --out eval/runs/lab
 ```
 
-产出终端 Markdown 表 + `eval/reports/report.{json,md}`。内置 6 份样例报告（`eval/sample_dataset/`，含 `labels.json` 分维度标注）。离线 mock 结果示例（越低越好）：
+每次运行保存配置、逐请求记录、失败和重试、实际模型和 token 用量、JSON 指标与 HTML 明细。`compare` 使用配对分组 bootstrap，检查扣分依据、复核/自动覆盖率、交付率、分数误差、耗时和用量；支持有轮数上限的候选记录及冻结后的最终确认。证据候选策略仅在指定评测中启用，不自动修改正常批改。
 
-| engine | mae | rmse | acc@5 | dim_hit_rate@3 |
-| --- | --- | --- | --- | --- |
-| simple | 2.67 | 3.87 | 0.67 | 0.83 |
-| agent | 2.00 | 2.38 | 1.00 | 1.00 |
-| multi | 1.33 | 1.63 | 1.00 | 1.00 |
+完整数据格式、真实调用和比较命令见 [docs/evaluation.md](docs/evaluation.md)。也可使用 MCP 的 `prepare_grading_eval/run_grading_eval/compare_grading_eval`，或已安装技能的 `scripts/run.py eval`。
 
-> mock 仅演示指标能区分引擎，不代表真实模型表现；真实结论请用 `--provider/--api-key` 跑。指标实现见 [eval/metrics.py](eval/metrics.py)。
+内置 36 个合成案例及预设响应回放，只验证功能，**不证明真实批改准确率提高**。真实验收需要人工标注样本及模型调用。旧 `python -m eval.run_eval` 保留兼容，新版本选择请用 `eval.quality`。
 
 ## 后训练 / Agent RL
 
@@ -212,7 +206,7 @@ python -m mcp_server.server     # stdio 运行
 │   ├── agent_framework.py     # framework 引擎: OpenAI Agents SDK 对照实现
 │   ├── stamp.py               # PDF 红色手写盖分 + 末尾评语 + ZIP
 │   └── summary.py             # 学生分组 Excel + 回读重生成（openpyxl）
-├── eval/                      # 评估: metrics/dataset/run_eval + 样例数据集(可离线跑)
+├── eval/                      # 独立质量评测 quality + 隐藏标注裁判/分组比较 + 离线夹具
 ├── posttrain/                 # 后训练: 奖励 / GradeEnv / SFT·DPO·RFT 导出 / 工具 GRPO
 ├── mcp_server/                # MCP server: 把批改工具对外暴露（含配置说明）
 ├── tests/test_assignments.py  # 作业题型离线测试（桩替换模型）
@@ -229,7 +223,7 @@ python -m mcp_server.server     # stdio 运行
 
 Skill 是「Agent 原生评分」路线：由 Codex/Claude 模型用自身阅读与视觉评分，不调用外部 API。
 
-- **Codex**：把 `skills/codex/.agents/skills/grade-lab-reports` 复制到目标项目的 `.agents/skills/`，然后：
+- **Codex 实验报告技能**：在已初始化的完整项目中运行 `.\.venv\Scripts\python.exe scripts\install_codex_skill.py --skill grade-lab-reports`，自动安装到用户技能目录并绑定主环境和手写渲染器。之后：
 
   ```text
   使用 $grade-lab-reports 批改 <报告目录>，评分标准为 <评分标准文件>

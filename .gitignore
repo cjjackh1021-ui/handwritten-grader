@@ -4,6 +4,8 @@ output/
 # 评估生成的报告（样例数据集 eval/sample_dataset 仍保留）
 eval/reports/
 eval/handwriting-results/
+eval/runs/
+eval/private_datasets/
 
 # 后训练产物（jsonl / GRPO 报告）
 posttrain/runs/

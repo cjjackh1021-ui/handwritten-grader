@@ -1,0 +1,398 @@
+{
+  "lab-g1-full": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g1-partial": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 50, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [{\"rule_id\": \"r2\", \"reason_code\": \"insufficient_data\", \"evidence\": \"只测了一次\", \"reason\": \"对应评分项存在该问题\"}], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 10, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g1-review": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": true, \"review_reason\": \"关键字迹无法辨认\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g2-full": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g2-partial": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 50, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [{\"rule_id\": \"r2\", \"reason_code\": \"insufficient_data\", \"evidence\": \"只测了一次\", \"reason\": \"对应评分项存在该问题\"}], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 10, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g2-review": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": true, \"review_reason\": \"关键字迹无法辨认\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g3-full": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g3-partial": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 50, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [{\"rule_id\": \"r2\", \"reason_code\": \"insufficient_data\", \"evidence\": \"只测了一次\", \"reason\": \"对应评分项存在该问题\"}], \"review_required\": false, \"review_reason\": \"\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 10, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ],
+  "lab-g3-review": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "get_report_info",
+          "type": "function",
+          "function": {
+            "name": "get_report_info",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "read_text",
+          "type": "function",
+          "function": {
+            "name": "read_text",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "submit_grade",
+          "type": "function",
+          "function": {
+            "name": "submit_grade",
+            "arguments": "{\"score\": 100, \"comment\": \"测试评语\", \"reason\": \"依据公开评分项判断\", \"deductions\": [], \"review_required\": true, \"review_reason\": \"关键字迹无法辨认\", \"dimensions\": [{\"name\": \"原理\", \"full\": 40, \"score\": 40, \"comment\": \"分项判断\"}, {\"name\": \"数据\", \"full\": 60, \"score\": 60, \"comment\": \"分项判断\"}]}"
+          }
+        }
+      ]
+    }
+  ]
+}

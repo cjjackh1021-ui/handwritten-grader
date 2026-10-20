@@ -1,0 +1,356 @@
+{
+  "math-g1-full": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ],
+  "math-g1-partial": [
+    {
+      "score": 2,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "arithmetic",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        },
+        {
+          "rule_id": "r3",
+          "reason_code": "wrong_answer",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=3",
+      "final_correct": false
+    }
+  ],
+  "math-g1-review": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ],
+  "math-g2-full": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ],
+  "math-g2-partial": [
+    {
+      "score": 2,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "arithmetic",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        },
+        {
+          "rule_id": "r3",
+          "reason_code": "wrong_answer",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=3",
+      "final_correct": false
+    }
+  ],
+  "math-g2-review": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ],
+  "math-g3-full": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ],
+  "math-g3-partial": [
+    {
+      "score": 2,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [
+        {
+          "rule_id": "r2",
+          "reason_code": "arithmetic",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        },
+        {
+          "rule_id": "r3",
+          "reason_code": "wrong_answer",
+          "evidence": "x=3",
+          "reason": "对应评分项存在该问题"
+        }
+      ],
+      "review_required": false,
+      "review_reason": "",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 0,
+          "correct": false,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=3",
+      "final_correct": false
+    }
+  ],
+  "math-g3-review": [
+    {
+      "score": 6,
+      "comment": "测试评语",
+      "reason": "依据公开评分项判断",
+      "deductions": [],
+      "review_required": true,
+      "review_reason": "关键字迹无法辨认",
+      "steps": [
+        {
+          "name": "移项",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "除法",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        },
+        {
+          "name": "答案",
+          "full": 2,
+          "score": 2,
+          "correct": true,
+          "note": "对照步骤"
+        }
+      ],
+      "student_final_answer": "x=2",
+      "final_correct": true
+    }
+  ]
+}

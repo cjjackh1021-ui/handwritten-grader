@@ -1,0 +1,9 @@
+{"id": "short-g1-full", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "short-g1-partial", "score": 7, "dimensions": {"r1": 3, "r2": 0, "r3": 4}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "missing", "evidence_any": [""]}]}
+{"id": "short-g1-review", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "short-g2-full", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "short-g2-partial", "score": 7, "dimensions": {"r1": 3, "r2": 0, "r3": 4}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "missing", "evidence_any": [""]}]}
+{"id": "short-g2-review", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "short-g3-full", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "short-g3-partial", "score": 7, "dimensions": {"r1": 3, "r2": 0, "r3": 4}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "missing", "evidence_any": [""]}]}
+{"id": "short-g3-review", "score": 10, "dimensions": {"r1": 3, "r2": 3, "r3": 4}, "review_required": true, "human_verified": false, "deductions": []}

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from . import providers
+from . import providers, eval_policy
 from .extract import ReportInfo
 
 SYSTEM_PROMPT = """你是一位经验丰富的实验报告批改老师。请严格按照用户提供的评分标准打分，并给出详细的给分依据。
@@ -67,12 +67,14 @@ def grade_report(choice: providers.ModelChoice, criteria: str, report: ReportInf
                     base_url=choice.base_url,
                     use_vision=True,
                 )
-            return providers.grade(vchoice, SYSTEM_PROMPT, user, images)
+            result = providers.grade(vchoice, SYSTEM_PROMPT + eval_policy.instructions(), user, images)
+            return eval_policy.finalize(result, result, report.full_text)
         except providers.ProviderError:
             pass  # 回退纯文本
 
     user = build_user_prompt(criteria, report, with_images=False)
-    return providers.grade(choice, SYSTEM_PROMPT, user, images=None)
+    result = providers.grade(choice, SYSTEM_PROMPT + eval_policy.instructions(), user, images=None)
+    return eval_policy.finalize(result, result, report.full_text)
 
 
 def format_dimensions(dims: list[dict]) -> str:

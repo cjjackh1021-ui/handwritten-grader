@@ -1,0 +1,5 @@
+{
+  "name": "evidence-v1",
+  "prompt_addendum": "区分学生未写与字迹无法确认；不要猜测关键符号。",
+  "require_evidence": true
+}

@@ -66,17 +66,24 @@ def run_engine(engine, items, criteria, choice, mock: bool) -> dict:
             pred = float(res.get("score", 0))
         except Exception as exc:  # noqa: BLE001
             errors += 1
-            print(f"  [err] {engine} / {it['file']}: {exc}")
+            print(f"  [err] {engine} / {it['file']}: {type(exc).__name__}")
+            per_item.append({"file": it["file"], "status": "error", "error_type": type(exc).__name__})
             continue
         preds.append(pred)
         trues.append(float(label.get("score", 0)))
         pred_dims.append(res.get("dimensions") or [])
         true_dims.append(label.get("dimensions") or [])
-        per_item.append({"file": it["file"], "true": label.get("score"),
+        per_item.append({"file": it["file"], "status": "completed", "true": label.get("score"),
                          "pred": pred, "abs_err": abs(pred - float(label.get("score", 0)))})
     elapsed = round(time.time() - t0, 2)
     stats = M.summarize(preds, trues, pred_dims, true_dims)
     stats["errors"] = errors
+    stats["requested"] = len(items)
+    stats["completed"] = len(preds)
+    stats["delivery_rate"] = len(preds)/len(items) if items else None
+    if not preds:
+        for key in ("mae", "rmse", "acc@5", "bias", "pearson", "dim_hit_rate@3", "dim_coverage"):
+            stats[key] = None
     stats["seconds"] = elapsed
     return {"metrics": stats, "items": per_item}
 
@@ -95,7 +102,10 @@ def _fmt_table(results: dict) -> str:
 
 
 def _best_line(results: dict) -> str:
-    ranked = sorted(results.items(), key=lambda kv: kv[1]["metrics"].get("mae", 9e9))
+    if any(data["metrics"].get("errors") for data in results.values()):
+        return "存在失败请求；成功样本上的 MAE 不能用于认定哪个版本更好。请使用 eval.quality 的配对评测。"
+    ranked = sorted(((k, v) for k, v in results.items() if v["metrics"].get("mae") is not None),
+                    key=lambda kv: kv[1]["metrics"]["mae"])
     if not ranked:
         return ""
     best, worst = ranked[0], ranked[-1]

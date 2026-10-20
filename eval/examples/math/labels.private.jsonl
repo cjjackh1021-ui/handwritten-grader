@@ -1,0 +1,9 @@
+{"id": "math-g1-full", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "math-g1-partial", "score": 2, "dimensions": {"r1": 2, "r2": 0, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "arithmetic", "evidence_any": ["x=3"]}, {"rule_id": "r3", "reason_code": "wrong_answer", "evidence_any": ["x=3"]}]}
+{"id": "math-g1-review", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "math-g2-full", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "math-g2-partial", "score": 2, "dimensions": {"r1": 2, "r2": 0, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "arithmetic", "evidence_any": ["x=3"]}, {"rule_id": "r3", "reason_code": "wrong_answer", "evidence_any": ["x=3"]}]}
+{"id": "math-g2-review", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "math-g3-full", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "math-g3-partial", "score": 2, "dimensions": {"r1": 2, "r2": 0, "r3": 0}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "arithmetic", "evidence_any": ["x=3"]}, {"rule_id": "r3", "reason_code": "wrong_answer", "evidence_any": ["x=3"]}]}
+{"id": "math-g3-review", "score": 6, "dimensions": {"r1": 2, "r2": 2, "r3": 2}, "review_required": true, "human_verified": false, "deductions": []}

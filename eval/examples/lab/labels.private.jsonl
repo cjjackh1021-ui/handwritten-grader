@@ -1,0 +1,9 @@
+{"id": "lab-g1-full", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "lab-g1-partial", "score": 50, "dimensions": {"r1": 40, "r2": 10}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "insufficient_data", "evidence_any": ["只测了一次"]}]}
+{"id": "lab-g1-review", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "lab-g2-full", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "lab-g2-partial", "score": 50, "dimensions": {"r1": 40, "r2": 10}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "insufficient_data", "evidence_any": ["只测了一次"]}]}
+{"id": "lab-g2-review", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": true, "human_verified": false, "deductions": []}
+{"id": "lab-g3-full", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": false, "human_verified": false, "deductions": []}
+{"id": "lab-g3-partial", "score": 50, "dimensions": {"r1": 40, "r2": 10}, "review_required": false, "human_verified": false, "deductions": [{"rule_id": "r2", "reason_code": "insufficient_data", "evidence_any": ["只测了一次"]}]}
+{"id": "lab-g3-review", "score": 100, "dimensions": {"r1": 40, "r2": 60}, "review_required": true, "human_verified": false, "deductions": []}
